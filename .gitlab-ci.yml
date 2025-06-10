@@ -1,0 +1,21 @@
+image: node:18-alpine  # Seçtiğimiz Docker image
+
+stages:
+  - build
+  - test
+  - deploy
+
+install_dependencies:
+  stage: build
+  script:
+    - npm install  # Angular bağımlılıklarını yükle
+
+run_tests:
+  stage: test
+  script:
+    - npm run test  # Testleri çalıştır
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Deployment yapılıyor..."  # Buraya gerçek deployment komutlarını ekle
