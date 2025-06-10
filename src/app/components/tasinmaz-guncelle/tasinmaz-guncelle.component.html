@@ -1,0 +1,60 @@
+<div class="container-fluid py-5 px-4" style="max-width: 1200px; margin: auto;">
+
+    <h3 class="mb-4 fw-bold">Taşınmaz Güncelle</h3>
+
+    <form [formGroup]="form" (ngSubmit)="kaydet()" class="card p-4 shadow-sm rounded-4">
+
+        <div class="mb-3">
+            <label class="form-label">Ada</label>
+            <input class="form-control" formControlName="ada" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Parsel</label>
+            <input class="form-control" formControlName="parsel" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Nitelik</label>
+            <input class="form-control" formControlName="nitelik" />
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label class="form-label">İl</label>
+                <select class="form-select" formControlName="ilId">
+                    <option [ngValue]="null">İl seçin</option>
+                    <option *ngFor="let il of iller" [value]="il.ilId">{{ il.ilAdi }}</option>
+                </select>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label class="form-label">İlçe</label>
+                <select class="form-select" formControlName="ilceId">
+                    <option [ngValue]="null">İlçe seçin</option>
+                    <option *ngFor="let ilce of ilceler" [value]="ilce.ilceId">{{ ilce.ilceAdi }}</option>
+                </select>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Mahalle</label>
+                <select class="form-select" formControlName="mahalleId">
+                    <option [ngValue]="null">Mahalle seçin</option>
+                    <option *ngFor="let mahalle of mahalleler" [value]="mahalle.mahalleId">
+                        {{ mahalle.mahalleAdi }}
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <label class="form-label">Mevcut Koordinat (Sadece Görüntüleme)</label>
+            <div id="readonlyMap" style="height: 400px; width: 100%;" class="rounded-4 border shadow-sm"></div>
+        </div>
+
+        <div class="mt-4 d-flex justify-content-between">
+            <a class="btn btn-duz" routerLink="/tasinmazlarim">İptal</a>
+            <button type="submit" class="btn btn-duz" [disabled]="form.invalid">Kaydet</button>
+        </div>
+    </form>
+</div>

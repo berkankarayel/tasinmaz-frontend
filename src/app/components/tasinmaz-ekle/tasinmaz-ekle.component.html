@@ -1,0 +1,95 @@
+<!-- Form Alanı -->
+<div class="main-background">
+    <div class="form-wrapper d-flex justify-content-center align-items-center">
+        <div class="container py-5">
+            <h3 class="mb-4 fw-bold text-primary">Yeni Taşınmaz Ekle</h3>
+
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                <div class="row g-3">
+                    <!-- İl -->
+                    <div class="col-md-4">
+                        <label class="form-label">İl</label>
+                        <select class="form-select" formControlName="ilId" required>
+                            <option value="">-- İl Seçin --</option>
+                            <option *ngFor="let il of iller" [value]="il.ilId">{{ il.ilAdi }}</option>
+                        </select>
+                        <div *ngIf="form.get('ilId')?.invalid && form.get('ilId')?.touched" class="text-danger small">
+                            İl seçimi zorunludur.
+                        </div>
+                    </div>
+
+                    <!-- İlçe -->
+                    <div class="col-md-4">
+                        <label class="form-label">İlçe</label>
+                        <select class="form-select" formControlName="ilceId" [disabled]="ilceler.length === 0">
+                            <option value="">-- İlçe Seçin --</option>
+                            <option *ngFor="let ilce of ilceler" [value]="ilce.ilceId">{{ ilce.ilceAdi }}</option>
+                        </select>
+                        <div *ngIf="form.get('ilceId')?.invalid && form.get('ilceId')?.touched"
+                            class="text-danger small">
+                            İlçe seçimi zorunludur.
+                        </div>
+                    </div>
+
+                    <!-- Mahalle -->
+                    <div class="col-md-4">
+                        <label class="form-label">Mahalle</label>
+                        <select class="form-select" formControlName="mahalleId" [disabled]="mahalleler.length === 0">
+                            <option value="">-- Mahalle Seçin --</option>
+                            <option *ngFor="let mahalle of mahalleler" [value]="mahalle.mahalleId">
+                                {{ mahalle.mahalleAdi }}
+                            </option>
+                        </select>
+                        <div *ngIf="form.get('mahalleId')?.invalid && form.get('mahalleId')?.touched"
+                            class="text-danger small">
+                            Mahalle seçimi zorunludur.
+                        </div>
+                    </div>
+
+                    <!-- Ada -->
+                    <div class="col-md-4">
+                        <label class="form-label">Ada</label>
+                        <input type="text" class="form-control" formControlName="ada" placeholder="Örn: 123" />
+                    </div>
+
+                    <!-- Parsel -->
+                    <div class="col-md-4">
+                        <label class="form-label">Parsel</label>
+                        <input type="text" class="form-control" formControlName="parsel" placeholder="Örn: 456" />
+                    </div>
+
+                    <!-- Nitelik -->
+                    <div class="col-md-4">
+                        <label class="form-label">Nitelik</label>
+                        <select class="form-select" formControlName="nitelik">
+                            <option value="">-- Seçin --</option>
+                            <option value="Arsa">Arsa</option>
+                            <option value="Tarla">Tarla</option>
+                            <option value="Mesken">Mesken</option>
+                        </select>
+                    </div>
+
+                    <!-- Koordinat -->
+                    <div class="col-12">
+                        <label class="form-label">Koordinat</label>
+                        <input type="text" class="form-control" formControlName="koordinat"
+                            placeholder="Haritadan otomatik alınır" readonly />
+                    </div>
+
+                    <!-- Harita -->
+                    <div class="col-12">
+                        <label class="form-label">Harita Üzerinden Nokta Seçimi</label>
+                        <div id="map" style="height: 400px; border: 1px solid #ccc;"></div>
+                    </div>
+                </div>
+
+                <!-- Butonlar -->
+                <!-- Butonlar -->
+                <div class="mt-4 d-flex justify-content-between">
+                    <a class="btn btn-duz" routerLink="/tasinmazlarim">İptal</a>
+                    <button type="submit" class="btn btn-duz" [disabled]="form.invalid">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

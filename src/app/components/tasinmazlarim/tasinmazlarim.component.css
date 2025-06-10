@@ -1,0 +1,300 @@
+/* === ÜST MENÜ === */
+.topbar {
+    background: linear-gradient(to right, #2f4f4f, #36454f);
+    height: 120px;
+    padding: 0 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.topbar h2 {
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+/* === NAV BUTONLAR === */
+.nav-btn {
+    background-color: #f0f0f0;
+    color: #000;
+    border: 2px solid #ffffff44;
+    border-radius: 30px;
+    padding: 10px 15px;
+    font-size: 1rem;
+}
+
+/* === ÇIKIŞ YAP === */
+.logout-btn {
+    background-color: #dc3545;
+    color: white;
+    border-radius: 30px;
+    padding: 10px 15px;
+    font-size: 1.1rem;
+    border: none;
+}
+
+/* === SAYFA GÖVDESİ === */
+.main-content {
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    margin: 30px;
+}
+
+/* === FİLTRE PANELİ === */
+.filtre-sabit {
+    width: 100%;
+    max-width: 340px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(4px);
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    padding: 24px 20px;
+    margin-left: 20px;
+    margin-right: 10px;
+    margin-top: 60px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+}
+
+
+.filtrele-buton {
+    background-color: rgba(151, 147, 147, 0.644);
+    color: rgb(0, 0, 0) !important;
+    font-weight: bold;
+    height: 40px;
+}
+
+/* Hover efekti: hafif yukarı çıkma */
+.filtrele-buton:hover,
+.temizle-buton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.temizle-buton {
+    background-color: white;
+    border: 1px solid #999;
+    font-weight: bold;
+    height: 40px;
+}
+
+
+
+/* === GENEL BUTON TASARIM === */
+.buton-standart {
+    background-color: transparent;
+    border: none;
+    color: #212529;
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 12px 24px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.buton-standart:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+
+.btn-primary.buton-standart {
+    background-color: #0d6efd;
+    color: white;
+    border: none;
+}
+
+.btn-primary.buton-standart:hover {
+    background-color: #0b5ed7;
+}
+
+/* Filtrele yazısı siyah olsun (sorun yaşayanlar için) */
+.buton-yazi {
+    color: #212529 !important;
+}
+
+/* === TABLO === */
+.table {
+    font-size: 1.1rem;
+}
+
+.table th {
+    background-color: #44515e;
+    color: white;
+}
+
+.table td,
+.table th {
+    vertical-align: middle !important;
+    padding: 1rem;
+}
+
+/* === SAYFALAMA === */
+.pagination {
+    margin-top: 20px;
+}
+
+.pagination .page-item {
+    transition: transform 0.2s ease, z-index 0.2s;
+}
+
+.pagination .page-item .page-link {
+    background-color: #f1f1f1;
+    /* Gri zemin */
+    color: #333;
+    /* Koyu yazı */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+/* Üzerine gelince animasyon ve daha koyu */
+.pagination .page-item:hover {
+    z-index: 2;
+    transform: translateY(-3px);
+}
+
+.pagination .page-item:hover .page-link {
+    background-color: #ddd;
+}
+
+/* Aktif olan sayfa */
+.pagination .page-item.active .page-link {
+    background-color: #44515e;
+    color: white;
+    border-color: #444;
+}
+
+
+/* === MESAJ ALANI === */
+.mesaj-box {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    padding: 14px 25px;
+    font-size: 1.15rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Tablodaki checkbox'ları büyütür */
+.table input[type="checkbox"] {
+    width: 18px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.confirm-box {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
+
+.mesaj-box {
+    position: fixed;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    padding: 14px 25px;
+    font-size: 1.1rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.harita-container {
+    height: 380px;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 0;
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.harita-ayar {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.icerik-wrapper {
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+@media (min-width: 992px) {
+    .main-content {
+        display: flex;
+    }
+
+    .filtre-sabit {
+        flex-shrink: 0;
+    }
+
+    .filtre-sabit {
+        max-width: 350px;
+        min-width: 280px;
+    }
+
+    .icerik-wrapper {
+        width: calc(100% - 380px);
+        /* filtre paneli açıkken otomatik daralsın */
+    }
+}
+
+.nav-btn:focus,
+.nav-btn:active,
+.logout-btn:focus,
+.logout-btn:active {
+    outline: none !important;
+    box-shadow: none !important;
+    background-color: #f0f0f0 !important;
+    /* eski halini koru */
+    color: #000 !important;
+}
+
+.map-toggle-btn {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    z-index: 999;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 8px 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.map-toggle-btn:hover {
+    background-color: #f1f1f1;
+}

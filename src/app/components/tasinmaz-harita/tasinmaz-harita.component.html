@@ -1,0 +1,26 @@
+<div class="container-fluid p-0">
+
+    <!-- ÜST MENÜ (Anasayfa ile birebir aynı yapı) -->
+    <div class="topbar px-5 shadow-sm d-flex justify-content-between align-items-center">
+        <h2 class="fw-bold text-white mb-0">Taşınmazlar Paneli</h2>
+        <div class="d-flex gap-3 align-items-center">
+            <button class="btn nav-btn" routerLink="/tasinmazlarim">Taşınmazlarım</button>
+            <button class="btn nav-btn" routerLink="/harita-gorunum">Harita Görünüm</button>
+            <button class="btn logout-btn" (click)="cikisYap()">Çıkış Yap</button>
+        </div>
+    </div>
+
+    <!-- HARİTA ALANI -->
+    <div class="px-4 mt-5">
+        <div id="harita" class="harita-container rounded-4 border shadow-sm"></div>
+    </div>
+
+    <div class="geri-don-buton">
+        <button class="btn btn-outline-secondary shadow-sm px-4 py-2" routerLink="/tasinmazlarim">
+            ← Geri Dön
+        </button>
+    </div>
+
+
+
+</div>

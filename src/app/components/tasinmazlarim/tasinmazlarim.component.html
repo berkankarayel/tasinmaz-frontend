@@ -1,0 +1,142 @@
+<!-- BAŞARI VE HATA MESAJ KARTLARI -->
+<div *ngIf="bilgiMesaji" class="alert alert-success mesaj-box">
+    {{ bilgiMesaji }}
+</div>
+
+<div *ngIf="hataMesaji" class="alert alert-danger mesaj-box">
+    {{ hataMesaji }}
+</div>
+
+<!-- SİLME ONAY MODALI -->
+<div class="modal-backdrop" *ngIf="silmeOnay">
+    <div class="confirm-box">
+        <p>{{ silinecekSayisi }} taşınmazı silmek istediğinizden emin misiniz?</p>
+        <div class="d-flex justify-content-end gap-3 mt-3">
+            <button class="btn btn-danger" (click)="silOnayla()">Evet</button>
+            <button class="btn btn-secondary" (click)="silIptal()">Hayır</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- ÜST MENÜ -->
+<div class="topbar">
+    <h2>Taşınmazlar Paneli</h2>
+    <div class="d-flex gap-3 align-items-center">
+
+        <button class="btn logout-btn" (click)="logout()">Çıkış Yap</button>
+    </div>
+</div>
+
+<div class="mt-5 px-4">
+
+
+
+    <!-- 🌍 Harita + Tablo + Filtre Alanı -->
+    <div class="main-content d-flex">
+
+        <!-- FİLTRE PANELİ -->
+        <div *ngIf="filtrePaneliGoster" class="filtre-sabit shadow-sm">
+            <h5 class="fw-bold mb-3">Filtreleme</h5>
+            <form [formGroup]="form">
+                <input class="form-control mb-2" placeholder="Ada" formControlName="ada" />
+                <input class="form-control mb-2" placeholder="Parsel" formControlName="parsel" />
+                <input class="form-control mb-2" placeholder="Nitelik" formControlName="nitelik" />
+                <input class="form-control mb-2" placeholder="İl" formControlName="ilAdi" />
+                <input class="form-control mb-2" placeholder="İlçe" formControlName="ilceAdi" />
+                <input class="form-control mb-3" placeholder="Mahalle" formControlName="mahalleAdi" />
+                <button class="filtrele-buton w-100 mb-2" type="button" (click)="filtrele()">Filtrele</button>
+                <button class="temizle-buton w-100" type="button" (click)="temizle()">Temizle</button>
+            </form>
+        </div>
+
+        <!-- HARİTA + TABLO ALANI -->
+        <div class="icerik-wrapper flex-grow-1 px-4">
+
+            <!-- 🔘 Harita Saydamlık Ayarı -->
+            <div class="harita-ayar d-flex align-items-center gap-3 mb-3">
+                <label for="opaklikSlider" class="form-label m-0 fw-semibold">Harita Saydamlığı:</label>
+                <input type="range" id="opaklikSlider" min="0.3" max="1" step="0.05" [(ngModel)]="haritaOpaklik"
+                    (input)="opaklikDegisti()" style="width: 200px;" />
+                <span>{{ haritaOpaklik }}</span>
+            </div>
+
+            <!-- 🌍 Harita -->
+            <!-- 🌍 Harita -->
+            <div class="position-relative">
+                <div id="harita" class="harita-container rounded-4 border shadow-sm mb-4"></div>
+
+                <!-- 🔘 Harita Katman Geçiş Butonu -->
+                <button class="map-toggle-btn" (click)="katmanDegistir()">
+                    <i class="bi bi-layers"></i>
+                </button>
+            </div>
+
+
+            <!-- BUTONLAR -->
+            <div class="d-flex justify-content-between flex-wrap mb-3">
+                <div class="d-flex flex-wrap gap-3">
+                    <button class="btn buton-standart" (click)="yeniTasinmaz()">
+                        <i class="bi bi-plus-circle me-2"></i> Taşınmaz Ekle
+                    </button>
+                    <button class="buton-standart" (click)="topluDuzenle()">
+                        <i class="bi bi-pencil-square me-2"></i> Düzenle
+                    </button>
+                    <button class="buton-standart" (click)="topluSil()">
+                        <i class="bi bi-trash3 me-2"></i> Sil
+                    </button>
+                    <button class="buton-standart" (click)="toggleFiltrePaneli()">
+                        <i class="bi bi-funnel me-2"></i> Filtrele
+                    </button>
+                </div>
+                <div class="d-flex flex-wrap gap-3">
+                    <button class="buton-standart" (click)="exportExcel()">
+                        <i class="bi bi-file-earmark-excel me-2"></i> Excel
+                    </button>
+                    <button class="buton-standart" (click)="exportPdf()">
+                        <i class="bi bi-file-earmark-pdf me-2"></i> PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- TABLO -->
+            <table class="table table-bordered table-hover text-center shadow-sm">
+                <thead class="table-dark">
+                    <tr>
+                        <th><input type="checkbox" (change)="tumunuSec($event)" /></th>
+                        <th>Taşınmaz No</th>
+                        <th>Ada</th>
+                        <th>Parsel</th>
+                        <th>Nitelik</th>
+                        <th>İl</th>
+                        <th>İlçe</th>
+                        <th>Mahalle</th>
+                        <th>Koordinat</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let t of sayfaVerisi; let i = index">
+                        <td><input type="checkbox" [(ngModel)]="t.secili" /></td>
+                        <td>{{ (sayfa - 1) * sayfaBoyutu + i + 1 }}</td>
+                        <td>{{ t.ada }}</td>
+                        <td>{{ t.parsel }}</td>
+                        <td>{{ t.nitelik }}</td>
+                        <td>{{ t.mahalle?.ilce?.il?.ilAdi }}</td>
+                        <td>{{ t.mahalle?.ilce?.ilceAdi }}</td>
+                        <td>{{ t.mahalle?.mahalleAdi }}</td>
+                        <td>{{ t.koordinat }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- SAYFALAMA -->
+    <nav class="d-flex justify-content-center mt-3">
+        <ul class="pagination">
+            <li class="page-item" *ngFor="let p of pageNumbers" [class.active]="sayfa === p">
+                <button class="page-link" (click)="sayfaDegistir(p)">{{ p }}</button>
+            </li>
+        </ul>
+    </nav>
+</div>

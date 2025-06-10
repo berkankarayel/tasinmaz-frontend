@@ -1,0 +1,138 @@
+<div *ngIf="hataMesaji" class="alert-kart alert-danger">
+    {{ hataMesaji }}
+</div>
+<div *ngIf="basariMesaji" class="alert-kart alert-success">
+    {{ basariMesaji }}
+</div>
+
+<!-- ÜST MENÜ -->
+<div class="topbar px-5 shadow-sm d-flex justify-content-between align-items-center">
+    <h2 class="fw-bold text-white mb-0">Yönetim Paneli</h2>
+    <div class="d-flex gap-2 align-items-center">
+        <button class="btn nav-btn" routerLink="/kullanicilar">Kullanıcı İşlemleri</button>
+        <button class="btn nav-btn" routerLink="/loglar">Log Kayıtları</button>
+        <button class="btn nav-btn" routerLink="/tasinmazlar">Taşınmazlar</button>
+        <button class="btn logout-btn" (click)="logout()">Çıkış Yap</button>
+    </div>
+</div>
+
+<!-- ANA GÖVDE -->
+<div class="main-content d-flex">
+
+    <!-- FİLTRE PANELİ -->
+    <div class="filtre-sabit shadow-sm" *ngIf="filtrePaneliGoster">
+        <div class="filtre-header mb-3 d-flex align-items-center gap-2">
+            <i class="bi bi-funnel-fill text-primary fs-4"></i>
+            <h5 class="fw-bold mb-0">Filtreleme</h5>
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label">Ada</label>
+            <input class="form-control filtre-input" [(ngModel)]="filter.ada" />
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label">Parsel</label>
+            <input class="form-control filtre-input" [(ngModel)]="filter.parsel" />
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label">Nitelik</label>
+            <input class="form-control filtre-input" [(ngModel)]="filter.nitelik" />
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label">İl</label>
+            <input class="form-control filtre-input" [(ngModel)]="filter.ilAdi" />
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label">İlçe</label>
+            <input class="form-control filtre-input" [(ngModel)]="filter.ilceAdi" />
+        </div>
+        <div class="form-group mb-4">
+            <label class="form-label">Mahalle</label>
+            <input class="form-control filtre-input" [(ngModel)]="filter.mahalleAdi" />
+        </div>
+
+        <button class="btn filtre-btn w-100 mb-2" (click)="filtrele()">
+            <i class="bi bi-funnel me-2"></i> Filtrele
+        </button>
+        <button class="btn temizle-buton w-100" (click)="tasinmazlariGetir()">Temizle</button>
+    </div>
+
+    <!-- HARİTA + TABLO ALANI -->
+    <div class="flex-grow-1 px-4">
+
+        <!-- Harita Saydamlık Ayarı -->
+        <div class="my-3 d-flex align-items-center gap-3">
+            <i class="bi bi-map text-primary fs-4"></i>
+            <label class="form-label mb-0">Harita Saydamlığı: {{ opacity }}</label>
+            <input type="range" min="0" max="1" step="0.1" [(ngModel)]="opacity" (input)="opacityDegisti()" />
+        </div>
+
+        <!-- HARİTA -->
+        <div id="map" class="rounded shadow"></div>
+
+        <!-- Üst Butonlar: Filtrele (sol), Excel/PDF (sağ) -->
+        <div class="d-flex justify-content-between align-items-center mt-4 mb-3 flex-wrap">
+            <!-- Sol: Filtre -->
+            <div class="d-flex flex-wrap gap-2">
+                <button class="buton-standart" (click)="filtrePaneliGoster = !filtrePaneliGoster">
+                    <i class="bi bi-funnel me-2"></i> Filtrele
+                </button>
+            </div>
+
+            <!-- Sağ: Export -->
+            <div class="d-flex flex-wrap gap-2">
+                <button class="buton-standart" (click)="excelIndir()">
+                    <i class="bi bi-file-earmark-excel me-2"></i> Excel
+                </button>
+                <button class="buton-standart" (click)="pdfIndir()">
+                    <i class="bi bi-file-earmark-pdf me-2"></i> PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- TABLO -->
+        <div class="log-table-container">
+            <table class="table dark-table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" (change)="hepsiniSec($event)" /></th>
+                        <th>Ada</th>
+                        <th>Parsel</th>
+                        <th>Nitelik</th>
+                        <th>İl</th>
+                        <th>İlçe</th>
+                        <th>Mahalle</th>
+                        <th>Koordinat</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of gosterilenTasinmazlar">
+                        <td><input type="checkbox" [(ngModel)]="item.secildi" /></td>
+                        <td>{{ item.ada }}</td>
+                        <td>{{ item.parsel }}</td>
+                        <td>{{ item.nitelik }}</td>
+                        <td>{{ item.mahalle?.ilce?.il?.ilAdi }}</td>
+                        <td>{{ item.mahalle?.ilce?.ilceAdi }}</td>
+                        <td>{{ item.mahalle?.mahalleAdi }}</td>
+                        <td>{{ item.koordinat }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SAYFALAMA -->
+        <nav class="d-flex justify-content-center mt-4">
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item" [class.disabled]="sayfa === 1">
+                    <button class="page-link" (click)="oncekiSayfa()">«</button>
+                </li>
+                <li class="page-item" *ngFor="let s of sayfaAraligi" [class.active]="sayfa === s">
+                    <button class="page-link" (click)="sayfaDegistir(s)">{{ s }}</button>
+                </li>
+                <li class="page-item" [class.disabled]="sayfa === toplamSayfa">
+                    <button class="page-link" (click)="sonrakiSayfa()">»</button>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

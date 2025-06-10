@@ -1,0 +1,134 @@
+<!-- UYARI KARTI -->
+<div *ngIf="bilgiMesaji" class="alert-kart alert-success">{{ bilgiMesaji }}</div>
+<div *ngIf="hataMesaji" class="alert-kart alert-danger">{{ hataMesaji }}</div>
+
+<!-- ÜST MENÜ -->
+<div class="topbar px-5 shadow-sm">
+    <h2 class="fw-bold text-white mb-0">Yönetim Paneli</h2>
+    <div class="d-flex gap-2 align-items-center">
+        <button class="btn nav-btn" routerLink="/kullanicilar">Kullanıcı İşlemleri</button>
+        <button class="btn nav-btn" routerLink="/loglar">Log Kayıtları</button>
+        <button class="btn nav-btn" routerLink="/tasinmazlar">Taşınmazlar</button>
+        <button class="btn logout-btn" (click)="logout()">Çıkış Yap</button>
+    </div>
+</div>
+
+<!-- GÖVDE -->
+<div class="main-content">
+
+    <!-- Gelişmiş Filtre Paneli -->
+    <form [formGroup]="filtreForm" class="filtre-sabit shadow-sm" *ngIf="filtrePaneliGoster">
+        <div class="filtre-header mb-3 d-flex align-items-center gap-2">
+            <i class="bi bi-funnel-fill text-primary fs-4"></i>
+            <h5 class="fw-bold mb-0">Filtreleme</h5>
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label">Kullanıcı ID</label>
+            <input class="form-control filtre-input" formControlName="kullaniciId" />
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label">İşlem Tipi</label>
+            <input class="form-control filtre-input" formControlName="islemTipi" />
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label">Durum</label>
+            <input class="form-control filtre-input" formControlName="durum" />
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label">IP</label>
+            <input class="form-control filtre-input" formControlName="ip" />
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label">Başlangıç Tarihi</label>
+            <input class="form-control filtre-input" type="date" formControlName="baslangicTarihi" />
+        </div>
+        <div class="form-group mb-4">
+            <label class="form-label">Bitiş Tarihi</label>
+            <input class="form-control filtre-input" type="date" formControlName="bitisTarihi" />
+        </div>
+
+        <button class="btn btn-primary w-100 mb-2 filtre-btn" (click)="filtreleLoglar()">Filtrele</button>
+        <button class="btn btn-outline-secondary w-100 filtre-btn" (click)="temizleFiltre()">Temizle</button>
+    </form>
+
+
+    <!-- TABLO ALANI -->
+    <div class="flex-grow-1 px-4">
+        <!-- Üst Kısım (Export ve Gelişmiş Filtre Butonu) -->
+        <!-- Üst Kısım (Export + Filtre Butonu) -->
+        <!-- ÜST BUTONLAR -->
+        <div class="d-flex justify-content-between align-items-center mt-4 mb-3 flex-wrap">
+            <!-- SOL: Gelişmiş Filtre -->
+            <div class="d-flex flex-wrap gap-2">
+                <button class="buton-standart" (click)="filtrePaneliGoster = !filtrePaneliGoster">
+                    <i class="bi bi-funnel me-2"></i> Filtrele
+                </button>
+            </div>
+
+            <!-- SAĞ: Excel & PDF -->
+            <div class="d-flex flex-wrap gap-2">
+                <button class="buton-standart" (click)="exportExcel()">
+                    <i class="bi bi-file-earmark-excel me-2"></i> Excel
+                </button>
+                <button class="buton-standart" (click)="exportPdf()">
+                    <i class="bi bi-file-earmark-pdf me-2"></i> PDF
+                </button>
+            </div>
+        </div>
+
+
+        <!-- Tablo -->
+        <div class="log-table-container">
+            <table class="table table-bordered table-hover text-center shadow-sm dark-table">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" (change)="tumunuSec($event)" /></th>
+                        <th>Loglar</th>
+                        <th>Kullanıcı ID</th>
+                        <th>İşlem Tipi</th>
+                        <th>Durum</th>
+                        <th>Açıklama</th>
+                        <th>Tarih</th>
+                        <th>IP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let log of gosterilenLoglar; let i = index">
+                        <td><input type="checkbox" [(ngModel)]="log.secili" /></td>
+                        <td>{{ (sayfa - 1) * sayfaBoyutu + i + 1 }}</td>
+                        <td>{{ log.kullaniciId ?? '-' }}</td>
+                        <td>{{ log.islemTipi ?? '-' }}</td>
+                        <td>{{ log.durum ?? '-' }}</td>
+                        <td>{{ log.aciklama ?? '-' }}</td>
+                        <td>{{ log.tarihSaat ? (log.tarihSaat | date: 'short') : '-' }}</td>
+                        <td>{{ log.kullaniciIp ?? '-' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Sayfalama -->
+            <nav class="d-flex justify-content-center mt-4">
+                <ul class="pagination pagination-sm mb-0">
+
+                    <!-- Önceki Sayfa -->
+                    <li class="page-item" [class.disabled]="sayfa === 1">
+                        <button class="page-link" (click)="oncekiSayfa()">«</button>
+                    </li>
+
+                    <!-- Sayfa numaraları -->
+                    <li class="page-item" *ngFor="let s of sayfaAraligi" [class.active]="sayfa === s">
+                        <button class="page-link" (click)="sayfaDegistir(s)">{{ s }}</button>
+                    </li>
+
+                    <!-- Sonraki Sayfa -->
+                    <li class="page-item" [class.disabled]="sayfa === toplamSayfa">
+                        <button class="page-link" (click)="sonrakiSayfa()">»</button>
+                    </li>
+
+                </ul>
+            </nav>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,326 @@
+<!-- BAŞARI veya HATA MESAJI -->
+<div *ngIf="bilgiMesaji" class="alert alert-success mesaj-kart">
+    {{ bilgiMesaji }}
+</div>
+<div *ngIf="hataMesaji" class="alert alert-danger mesaj-kart">
+    {{ hataMesaji }}
+</div>
+
+<!-- ÜST MENÜ sabit -->
+<div class="topbar px-5 shadow-sm">
+    <h2 class="fw-bold text-white mb-0">Yönetim Paneli</h2>
+    <div class="d-flex gap-2 align-items-center">
+        <button class="btn nav-btn" routerLink="/kullanicilar">Kullanıcı İşlemleri</button>
+        <button class="btn nav-btn" routerLink="/loglar">Log Kayıtları</button>
+        <button class="btn nav-btn" routerLink="/tasinmazlar">Taşınmazlar</button>
+        <button class="btn logout-btn" (click)="logout()">Çıkış Yap</button>
+    </div>
+</div>
+
+<!-- ANA GÖVDE -->
+<div class="main-content d-flex">
+    <!-- FİLTRE PANELİ -->
+    <div class="filtre-sabit shadow-sm" *ngIf="filtrePaneliGoster">
+        <div class="filtre-header mb-3 d-flex align-items-center gap-2">
+            <i class="bi bi-funnel-fill text-primary fs-4"></i>
+            <h5 class="fw-bold mb-0">Filtreleme</h5>
+        </div>
+
+        <div class="form-group mb-3">
+            <label class="form-label">Ad</label>
+            <input type="text" class="form-control filtre-input" [(ngModel)]="filter.kullaniciAdi" />
+        </div>
+        <div class="form-group mb-3">
+            <label class="form-label">Email</label>
+            <input type="text" class="form-control filtre-input" [(ngModel)]="filter.email" />
+        </div>
+        <div class="form-group mb-4">
+            <label class="form-label">Rol</label>
+            <input type="text" class="form-control filtre-input" [(ngModel)]="filter.rol" />
+        </div>
+
+        <button class="btn btn-primary w-100 mb-2 filtre-btn" (click)="filtrele()">Filtrele</button>
+        <button class="btn btn-outline-secondary w-100 filtre-btn" (click)="temizleFiltre()">Temizle</button>
+    </div>
+
+    <!-- TABLO ALANI -->
+    <div class="flex-grow-1 px-4">
+        <!-- Üst Butonlar -->
+        <!-- BUTONLAR (üstte sade) -->
+        <!-- ÜST BUTONLAR -->
+        <div class="d-flex justify-content-between align-items-center mt-4 mb-3 flex-wrap">
+            <!-- SOL: Kullanıcı işlemleri -->
+            <div class="d-flex flex-wrap gap-2">
+
+                <button class="buton-standart" data-bs-toggle="modal" data-bs-target="#kullaniciEkleModal">
+                    <i class="bi bi-person-plus me-2"></i> Kullanıcı Ekle
+                </button>
+                <button class="buton-standart" (click)="topluSil()">
+                    <i class="bi bi-trash3 me-2"></i> Sil
+                </button>
+                <button class="buton-standart" (click)="topluDuzenle()">
+                    <i class="bi bi-pencil-square me-2"></i> Düzenle
+                </button>
+
+                <button class="buton-standart" (click)="filtrePaneliGoster = !filtrePaneliGoster">
+                    <i class="bi bi-funnel me-2"></i> Filtrele
+                </button>
+            </div>
+
+            <!-- SAĞ: Excel & PDF -->
+            <div class="d-flex flex-wrap gap-2">
+                <button class="buton-standart" (click)="exportExcel()">
+                    <i class="bi bi-file-earmark-excel me-2"></i> Excel
+                </button>
+                <button class="buton-standart" (click)="exportPdf()">
+                    <i class="bi bi-file-earmark-pdf me-2"></i> PDF
+                </button>
+            </div>
+        </div>
+
+        <!-- Tablo -->
+        <div class="log-table-container">
+            <table class="table table-bordered table-hover text-center shadow-sm">
+                <thead class="table-dark">
+                    <tr>
+                        <th><input type="checkbox" (change)="tumunuSec($event)" /></th>
+                        <th>#</th>
+                        <th>Ad</th>
+                        <th>Soyad</th>
+                        <th>Email</th>
+                        <th>Rol</th>
+                        <th>Adres</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of gosterilenKullanicilar; let i = index">
+                        <td><input type="checkbox" [(ngModel)]="user.secili" /></td>
+                        <td>{{ (sayfa - 1) * sayfaBoyutu + i + 1 }}</td>
+                        <td>{{ user.kullaniciAdi }}</td>
+                        <td>{{ user.kullaniciSoyadi }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            <span class="badge rounded-pill px-3 py-2 text-white" [ngClass]="getRolClass(user.rol)">
+                                {{ getRolAdi(user.rol) }}
+                            </span>
+                        </td>
+                        <td>{{ user.adres }}</td>
+
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Sayfalama -->
+            <nav class="d-flex justify-content-center mt-4">
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item" [class.disabled]="sayfa === 1">
+                        <button class="page-link" (click)="oncekiSayfa()">«</button>
+                    </li>
+
+                    <li class="page-item" *ngFor="let s of sayfaAraligi" [class.active]="sayfa === s">
+                        <button class="page-link" (click)="sayfaDegistir(s)">{{ s }}</button>
+                    </li>
+
+                    <li class="page-item" [class.disabled]="sayfa === toplamSayfa">
+                        <button class="page-link" (click)="sonrakiSayfa()">»</button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+>
+
+<!-- KULLANICI EKLEME MODALI -->
+
+<div class="modal fade" id="kullaniciEkleModal" tabindex="-1" aria-labelledby="kullaniciEkleLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Yeni Kullanıcı Ekle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="kullaniciForm">
+                    <div class="row g-3">
+
+                        <!-- Ad -->
+                        <div class="col-md-12 d-flex align-items-center">
+                            <label class="form-label me-3 w-23">Ad:</label>
+                            <input class="form-control w-50" placeholder="Ad" formControlName="kullaniciAdi"
+                                [ngClass]="{ 'is-invalid': kullaniciForm.get('kullaniciAdi')?.invalid && kullaniciForm.get('kullaniciAdi')?.touched }">
+                            <div class="invalid-feedback"
+                                *ngIf="kullaniciForm.get('kullaniciAdi')?.errors?.['required']">
+                                Ad zorunludur.
+                            </div>
+                        </div>
+
+                        <!-- Soyad -->
+                        <div class="col-md-12 d-flex align-items-center">
+                            <label class="form-label me-3 w-20">Soyad:</label>
+                            <input class="form-control w-50" placeholder="Soyad" formControlName="kullaniciSoyadi"
+                                [ngClass]="{ 'is-invalid': kullaniciForm.get('kullaniciSoyadi')?.invalid && kullaniciForm.get('kullaniciSoyadi')?.touched }">
+                            <div class="invalid-feedback"
+                                *ngIf="kullaniciForm.get('kullaniciSoyadi')?.errors?.['required']">
+                                Soyad zorunludur.
+                            </div>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="col-md-12 d-flex align-items-center">
+                            <label class="form-label me-3 w-20">Email:</label>
+                            <input class="form-control w-50" placeholder="Email" formControlName="email"
+                                [ngClass]="{ 'is-invalid': kullaniciForm.get('email')?.invalid && kullaniciForm.get('email')?.touched }">
+                            <div class="invalid-feedback" *ngIf="kullaniciForm.get('email')?.errors">
+                                <div
+                                    *ngIf="kullaniciForm.controls['email'].errors && kullaniciForm.controls['email'].touched">
+                                    <div *ngIf="kullaniciForm.controls['email'].errors['required']">Email zorunludur.
+                                    </div>
+                                    <div *ngIf="kullaniciForm.controls['email'].errors['pattern']">Geçerli bir email
+                                        giriniz (örn: isim&#64;mail.com)</div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Şifre -->
+                        <div class="col-md-12 d-flex align-items-center">
+                            <label class="form-label me-3 w-20">Şifre:</label>
+                            <input type="password" class="form-control w-50" placeholder="Şifre" formControlName="sifre"
+                                [ngClass]="{ 'is-invalid': kullaniciForm.get('sifre')?.invalid && kullaniciForm.get('sifre')?.touched }">
+                            <div class="invalid-feedback" *ngIf="kullaniciForm.get('sifre')?.errors">
+                                <!-- Şifre boşsa -->
+                                <div
+                                    *ngIf="kullaniciForm.get('sifre')?.touched && kullaniciForm.get('sifre')?.errors?.['required']">
+                                    Şifre zorunludur.
+                                </div>
+                                <div *ngIf="kullaniciForm.get('sifre')?.errors?.['minlength']">
+                                    Şifre en az 6 karakter olmalıdır.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rol -->
+                        <div class="col-md-12 d-flex align-items-center">
+                            <label class="form-label me-3 w-20">Rol:</label>
+                            <select class="form-select w-50" formControlName="rol"
+                                [ngClass]="{ 'is-invalid': kullaniciForm.get('rol')?.invalid && kullaniciForm.get('rol')?.touched }">
+                                <option value="" disabled selected>Rol Seç</option>
+                                <option value="Admin">Admin</option>
+                                <option value="Kullanici">Kullanıcı</option>
+                            </select>
+                            <div class="invalid-feedback" *ngIf="kullaniciForm.get('rol')?.errors?.['required']">
+                                Rol seçimi zorunludur.
+                            </div>
+                        </div>
+
+                        <!-- Adres -->
+                        <div class="col-md-12 d-flex align-items-center">
+                            <label class="form-label me-3 w-20">Adres:</label>
+                            <input class="form-control w-50" placeholder="Adres" formControlName="adres"
+                                [ngClass]="{ 'is-invalid': kullaniciForm.get('adres')?.invalid && kullaniciForm.get('adres')?.touched }">
+                            <div class="invalid-feedback" *ngIf="kullaniciForm.get('adres')?.errors?.['required']">
+                                Adres zorunludur.
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-primary" (click)="kullaniciEkle()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- KULLANICI GÜNCELLEME MODALI -->
+
+<div class="modal fade" id="kullaniciDuzenleModal" tabindex="-1" aria-labelledby="kullaniciDuzenleLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Kullanıcıyı Güncelle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body" *ngIf="selectedUser">
+                <form [formGroup]="kullaniciGuncelleForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <input class="form-control" placeholder="Ad" formControlName="kullaniciAdi">
+                        </div>
+                        <div class="col-md-6">
+                            <input class="form-control" placeholder="Soyad" formControlName="kullaniciSoyadi">
+                        </div>
+                        <div class="col-md-6">
+                            <input class="form-control" placeholder="Email" formControlName="email">
+                        </div>
+                        <div class="col-md-6">
+                            <input class="form-control" placeholder="Adres" formControlName="adres">
+                        </div>
+                        <div class="col-md-6">
+                            <select class="form-select" formControlName="rol">
+                                <option [value]="1">Admin</option>
+                                <option [value]="2">Kullanıcı</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+
+                ```
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                <button type="button" class="btn btn-primary" (click)="kullaniciGuncelle()">Güncelle</button>
+            </div>
+        </div>
+    </div>
+    ```
+
+</div>
+
+<!-- BAŞARI TOAST -->
+
+<div class="position-fixed start-50 translate-middle-x p-3" style="top: 20px; z-index: 9999;">
+    <div id="successToast" class="toast align-items-center text-white bg-success shadow rounded-3 px-4 py-3 toast-genis"
+        role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex flex-column align-items-start">
+            <div class="w-100 d-flex justify-content-between align-items-center">
+                <div class="fs-5"><i class="bi bi-check-square-fill me-2"></i> {{ toastMesaji }}</div>
+
+                ```
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"
+                    aria-label="Kapat"></button>
+            </div>
+            <div class="mt-3 w-100 text-end">
+                <button class="btn btn-light btn-sm" data-bs-dismiss="toast">Tamam</button>
+            </div>
+        </div>
+    </div>
+    ```
+
+</div>
+
+<!-- SİLME ONAY MODALI -->
+
+<div class="modal fade" id="silmeOnayModal" tabindex="-1" aria-labelledby="silmeOnayLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Kullanıcıyı Sil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>{{ secilenKullaniciSayisi }}</strong> adet kullanıcıyı silmek istiyor musunuz?</p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" (click)="silOnayla()">Evet, Sil</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,101 @@
+/* Sayfa genel boşluk ve hizalama */
+.container {
+    max-width: 900px;
+    margin: 40px auto;
+    /* Üst, alt, sağ ve sol boşluk */
+    padding: 40px;
+    background-color: #fdfdfd;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border-radius: 20px;
+}
+
+/* Başlık */
+h3 {
+    font-size: 2rem;
+    color: #2c3e50;
+    border-left: 6px solid #007bff;
+    padding-left: 12px;
+    margin-bottom: 30px;
+}
+
+/* Form kartı */
+form.card {
+    width: 100%;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    background-color: #ffffff;
+    border: 1px solid #e2e2e2;
+}
+
+
+/* Label'lar */
+.form-label {
+    font-weight: 600;
+    color: #3d3d3d;
+}
+
+/* Input alanları */
+input.form-control {
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    transition: border-color 0.3s ease;
+}
+
+input.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
+    outline: none;
+}
+
+/* Harita alanı */
+#readonlyMap {
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 12px;
+}
+
+/* Butonlar */
+button.btn {
+    padding: 12px 24px;
+    font-size: 1rem;
+    border-radius: 12px;
+    min-width: 120px;
+}
+
+button.btn-success {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+button.btn-success:hover {
+    background-color: #146c43;
+}
+
+button.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+button.btn-secondary:hover {
+    background-color: #565e64;
+}
+
+.btn-duz {
+    background-color: #f5f5f5;
+    border: 1px solid #c1c1c1;
+    color: #333;
+    padding: 0.5rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.btn-duz:hover {
+    background-color: #e0e0e0;
+    color: #111;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
